@@ -21,8 +21,8 @@ fun <EV : Any, ST : Any, PA : PartialState<ST>> ViewModel.stateProcessor(
 
 fun <EV : Any, ST : Any, PA : PartialState<ST>, EF : Any> ViewModel.stateEffectProcessor(
     initialState: ST,
-    prepare: (suspend (EffectsCollector<EF>) -> Flow<PA>)? = null,
-    mapper: (suspend (EffectsCollector<EF>, EV) -> Flow<PA>)? = null,
+    prepare: (suspend (EffectsCollector<EF, ST>) -> Flow<PA>)? = null,
+    mapper: (suspend (EffectsCollector<EF, ST>, EV) -> Flow<PA>)? = null,
 ): StateEffectProcessor<EV, ST, EF> = viewModelScope.stateEffectProcessor(
     initialState = initialState,
     prepare = prepare,
@@ -30,8 +30,8 @@ fun <EV : Any, ST : Any, PA : PartialState<ST>, EF : Any> ViewModel.stateEffectP
 )
 
 fun <EV : Any, EF : Any> ViewModel.effectProcessor(
-    prepare: (suspend (EffectsCollector<EF>) -> Unit)? = null,
-    mapper: (suspend (EffectsCollector<EF>, EV) -> Unit)? = null,
+    prepare: (suspend (EffectsCollector<EF, Nothing>) -> Unit)? = null,
+    mapper: (suspend (EffectsCollector<EF, Nothing>, EV) -> Unit)? = null,
 ): EffectProcessor<EV, EF> = viewModelScope.effectProcessor(
     prepare = prepare,
     mapper = mapper

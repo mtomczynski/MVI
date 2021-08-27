@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 internal class FlowStateEffectProcessor<in EV : Any, ST : Any, out PA : PartialState<ST>, EF : Any> constructor(
     private val scope: CoroutineScope,
     initialState: ST,
-    prepare: (suspend (EffectsCollector<EF>) -> Flow<PA>)? = null,
-    private val mapper: (suspend (EffectsCollector<EF>, EV) -> Flow<PA>)? = null,
+    prepare: (suspend (EffectsCollector<EF, ST>) -> Flow<PA>)? = null,
+    private val mapper: (suspend (EffectsCollector<EF, ST>, EV) -> Flow<PA>)? = null,
 ) : StateEffectProcessor<EV, ST, EF> {
 
     override val effect: Flow<EF>
@@ -27,9 +28,10 @@ internal class FlowStateEffectProcessor<in EV : Any, ST : Any, out PA : PartialS
         get() = stateFlow
     private val stateFlow: MutableStateFlow<ST> = MutableStateFlow(initialState)
 
-    private val effectsCollector: EffectsCollector<EF> = object : EffectsCollector<EF> {
-        override fun send(effect: EF) {
+    private val effectsCollector: EffectsCollector<EF, ST> = object : EffectsCollector<EF, ST> {
+        override fun send(effect: EF): Flow<PartialState<ST>> {
             scope.launch { effectSharedFlow.emit(effect) }
+            return flowOf(PartialState.NoAction())
         }
     }
 

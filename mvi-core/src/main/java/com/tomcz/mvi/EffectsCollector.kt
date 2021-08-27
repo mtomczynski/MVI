@@ -1,5 +1,7 @@
 package com.tomcz.mvi
 
-interface EffectsCollector<T : Any> {
-    fun send(effect: T)
+import kotlinx.coroutines.flow.Flow
+
+interface EffectsCollector<EF : Any, ST : Any> {
+    fun send(effect: EF): Flow<PartialState.NoAction<ST>>
 }
