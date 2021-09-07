@@ -1,4 +1,4 @@
-## Name change, development continues under the [Ellipse](https://github.com/mtomczynski/ellipse)
+## Name change, development continues under the [Ellipse](https://github.com/mtomczynski/ellipse) repo.
 ## 🚧 MVI - Model View Intent 🚧
 ### Pragmatic Unidirectional Data Flow for Android
 
